@@ -16,5 +16,18 @@ body {
   position: absolute;
   top: 2px;
   left: 2px;
+  z-index: 50;
+}
+
+#title-container {
+  display: flex;
+  width: 100vw;
+  align-items: center;
+  justify-content: center;
+}
+
+h1 {
+  color: white;
   z-index: 100;
+  font-size: 4rem;
 }
