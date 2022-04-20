@@ -43,9 +43,10 @@ material.normalMap = normalTexture;
 const sphere = new THREE.Mesh(geometry, material);
 scene.add(sphere);
 
-// Lighting
+// ------- Lighting --------
 
-const pointLight = new THREE.PointLight(0x000bdb, 0.5);
+// Light 1
+const pointLight = new THREE.PointLight(0x4d7e91, 1);
 pointLight.position.set(1.5, 1.65, -0.22);
 pointLight.intensity = 1.9;
 scene.add(pointLight);
@@ -57,13 +58,14 @@ light1.add(pointLight.position, 'y').min(-3).max(3).step(0.01);
 light1.add(pointLight.position, 'z').min(-3).max(3).step(0.01);
 light1.add(pointLight, 'intensity').min(0).max(10).step(0.01);
 
-const pointLightHelper = new THREE.PointLightHelper(pointLight, 1);
-scene.add(pointLightHelper);
+// const pointLightHelper = new THREE.PointLightHelper(pointLight, 1);
+// scene.add(pointLightHelper);
 
+// Light 2
 const light2 = gui.addFolder('Light 2');
-const pointLight2 = new THREE.PointLight(0xe30000, 0.5);
-pointLight2.position.set(-1.26, -1.47, 0.3);
-pointLight2.intensity = 1.9;
+const pointLight2 = new THREE.PointLight(0x3e805d, 1);
+pointLight2.position.set(-1.45, -1.75, 0.3);
+pointLight2.intensity = 1.5;
 scene.add(pointLight2);
 
 light2.add(pointLight2.position, 'x').min(-6).max(6).step(0.01);
@@ -71,20 +73,47 @@ light2.add(pointLight2.position, 'y').min(-3).max(3).step(0.01);
 light2.add(pointLight2.position, 'z').min(-3).max(3).step(0.01);
 light2.add(pointLight2, 'intensity').min(0).max(10).step(0.01);
 
-const pointLight2Helper = new THREE.PointLightHelper(pointLight2, 1);
-scene.add(pointLight2Helper);
+// const pointLight2Helper = new THREE.PointLightHelper(pointLight2, 1);
+// scene.add(pointLight2Helper);
 
 // Camera
-
 const cameraFolder = gui.addFolder('Camera');
 cameraFolder.add(camera.position, 'z', 0, 10);
 cameraFolder.open();
 
 scene.add(camera);
 
-function animate() {
-  requestAnimationFrame(animate);
-  sphere.rotation.y += 0.005;
+// Animate
+
+let mouseX = 0;
+let mouseY = 0;
+
+let targetX = 0;
+let targetY = 0;
+
+const windowHalfX = window.innerWidth / 2;
+const windowHalfY = window.innerHeight / 2;
+
+const onDocumentMouseMove = event => {
+  mouseX = event.clientX - windowHalfX;
+  mouseY = event.clientY - windowHalfY;
+};
+
+document.addEventListener('mousemove', onDocumentMouseMove);
+
+const clock = new THREE.Clock();
+
+const animate = () => {
+  const elapsedTime = clock.getElapsedTime();
+  targetX = mouseX * 0.0005;
+  targetY = mouseY * 0.0005;
+  sphere.rotation.y = 0.5 * elapsedTime;
+  sphere.rotation.y += 0.5 * (targetX - sphere.rotation.y);
+  sphere.rotation.x += 0.2 * (targetY - sphere.rotation.x);
+  sphere.rotation.z += 0.2 * (targetY - sphere.rotation.x);
   renderer.render(scene, camera);
-}
+
+  // When mouse is not active, animate itself
+  window.requestAnimationFrame(animate);
+};
 animate();
